@@ -11,13 +11,13 @@ import lombok.Setter;
 import tech.maze.data.markets.backend.domain.models.OptionStyle;
 import tech.maze.data.markets.backend.domain.models.OptionType;
 
+/**
+ * Embeddable option-specific fields for option markets.
+ */
 @Embeddable
 @Getter
 @Setter
 @NoArgsConstructor
-/**
- * Generated type.
- */
 public class OptionSpecificDataEmbeddable {
   @Column(name = "option_strike")
   private Double strike;

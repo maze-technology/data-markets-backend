@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tech.maze.data.markets.backend.domain.models.MarketType;
 
+/**
+ * JPA entity for markets.
+ */
 @Entity
 @Table(name = "markets")
 @Getter
 @Setter
 @NoArgsConstructor
-/**
- * Generated type.
- */
 public class MarketEntity {
   @Id
   private UUID id;

@@ -12,11 +12,11 @@ import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
 import tech.maze.data.markets.backend.infrastructure.persistence.mappers.MarketEntityMapper;
 import tech.maze.data.markets.backend.infrastructure.persistence.repositories.MarketJpaRepository;
 
+/**
+ * Persistence adapter for markets.
+ */
 @Component
 @RequiredArgsConstructor
-/**
- * Generated type.
- */
 public class MarketPersistenceAdapter implements LoadMarketPort, SaveMarketPort, SearchMarketsPort {
   private final MarketJpaRepository marketJpaRepository;
   private final MarketEntityMapper marketEntityMapper;

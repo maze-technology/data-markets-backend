@@ -4,10 +4,10 @@ import org.mapstruct.Mapper;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
 
-@Mapper(componentModel = "spring")
 /**
- * Generated type.
+ * Maps market entities to domain models and back.
  */
+@Mapper(componentModel = "spring")
 public interface MarketEntityMapper {
   /**
    * Generated method.

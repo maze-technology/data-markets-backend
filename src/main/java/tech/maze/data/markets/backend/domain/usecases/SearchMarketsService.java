@@ -7,11 +7,11 @@ import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
 
+/**
+ * Use case for listing markets.
+ */
 @Service
 @RequiredArgsConstructor
-/**
- * Generated type.
- */
 public class SearchMarketsService implements SearchMarketsUseCase {
   private final SearchMarketsPort searchMarketsPort;
 
