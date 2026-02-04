@@ -13,6 +13,7 @@ public interface MarketEntityMapper {
    * Generated method.
    */
   Market toDomain(MarketEntity entity);
+
   /**
    * Generated method.
    */
