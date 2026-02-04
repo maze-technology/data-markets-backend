@@ -19,6 +19,9 @@ import tech.maze.data.markets.backend.domain.models.MarketType;
 @Getter
 @Setter
 @NoArgsConstructor
+/**
+ * Generated type.
+ */
 public class MarketEntity {
   @Id
   private UUID id;

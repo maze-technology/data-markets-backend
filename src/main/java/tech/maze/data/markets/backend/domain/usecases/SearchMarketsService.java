@@ -9,6 +9,9 @@ import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Generated type.
+ */
 public class SearchMarketsService implements SearchMarketsUseCase {
   private final SearchMarketsPort searchMarketsPort;
 

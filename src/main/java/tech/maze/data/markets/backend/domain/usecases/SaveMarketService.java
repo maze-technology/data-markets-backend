@@ -8,6 +8,9 @@ import tech.maze.data.markets.backend.domain.ports.out.SaveMarketPort;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Generated type.
+ */
 public class SaveMarketService implements SaveMarketUseCase {
   private final SaveMarketPort saveMarketPort;
 

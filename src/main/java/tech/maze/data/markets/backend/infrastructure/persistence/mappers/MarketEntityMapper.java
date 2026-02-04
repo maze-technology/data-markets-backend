@@ -5,8 +5,17 @@ import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
 
 @Mapper(componentModel = "spring")
+/**
+ * Generated type.
+ */
 public interface MarketEntityMapper {
+  /**
+   * Generated method.
+   */
   Market toDomain(MarketEntity entity);
+  /**
+   * Generated method.
+   */
   MarketEntity toEntity(Market market);
 
   default tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable toEmbeddable(
@@ -15,11 +24,29 @@ public interface MarketEntityMapper {
       return null;
     }
     final tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable embeddable =
+  /**
+   * Generated method.
+   */
         new tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable();
+  /**
+   * Generated method.
+   */
     embeddable.setStrike(optionSpecificData.strike());
+  /**
+   * Generated method.
+   */
     embeddable.setExpiredAt(optionSpecificData.expiredAt());
+  /**
+   * Generated method.
+   */
     embeddable.setType(optionSpecificData.type());
+  /**
+   * Generated method.
+   */
     embeddable.setStyle(optionSpecificData.style());
+  /**
+   * Generated method.
+   */
     embeddable.setUnderlying(optionSpecificData.underlying());
     return embeddable;
   }

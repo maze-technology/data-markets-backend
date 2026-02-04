@@ -11,6 +11,9 @@ import tech.maze.commons.CommonsConfiguration;
 @Configuration
 @Import({CommonsConfiguration.class})
 @ComponentScan("tech.maze.data.markets.backend")
+/**
+ * Generated type.
+ */
 public class AppConfiguration {
 
 }

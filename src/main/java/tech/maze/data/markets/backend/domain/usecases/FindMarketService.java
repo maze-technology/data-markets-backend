@@ -10,6 +10,9 @@ import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * Generated type.
+ */
 public class FindMarketService implements FindMarketUseCase {
   private final LoadMarketPort loadMarketPort;
 

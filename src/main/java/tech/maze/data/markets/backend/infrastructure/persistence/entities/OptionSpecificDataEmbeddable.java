@@ -15,6 +15,9 @@ import tech.maze.data.markets.backend.domain.models.OptionType;
 @Getter
 @Setter
 @NoArgsConstructor
+/**
+ * Generated type.
+ */
 public class OptionSpecificDataEmbeddable {
   @Column(name = "option_strike")
   private Double strike;

@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
 
 @Repository
+/**
+ * Generated type.
+ */
 public interface MarketJpaRepository extends JpaRepository<MarketEntity, UUID> {}
