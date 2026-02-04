@@ -1,4 +1,4 @@
-package tech.maze.helloworld.backend;
+package tech.maze.data.markets.backend;
 
 import lombok.AccessLevel;
 import lombok.Data;
