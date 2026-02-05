@@ -2,7 +2,9 @@ package tech.maze.data.markets.backend.infrastructure.persistence.mappers;
 
 import org.mapstruct.Mapper;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
+import tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable;
 
 /**
  * Maps market entities to domain models and back.
@@ -10,59 +12,46 @@ import tech.maze.data.markets.backend.infrastructure.persistence.entities.Market
 @Mapper(componentModel = "spring")
 public interface MarketEntityMapper {
   /**
-   * Generated method.
+   * Maps a market entity into its domain model.
    */
   Market toDomain(MarketEntity entity);
 
   /**
-   * Generated method.
+   * Maps option specific embeddable data into the domain model.
    */
-  MarketEntity toEntity(Market market);
-
-  default tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable toEmbeddable(
-      tech.maze.data.markets.backend.domain.models.OptionSpecificData optionSpecificData) {
-    if (optionSpecificData == null) {
-      return null;
-    }
-    final tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable embeddable =
-  /**
-   * Generated method.
-   */
-        new tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable();
-  /**
-   * Generated method.
-   */
-    embeddable.setStrike(optionSpecificData.strike());
-  /**
-   * Generated method.
-   */
-    embeddable.setExpiredAt(optionSpecificData.expiredAt());
-  /**
-   * Generated method.
-   */
-    embeddable.setType(optionSpecificData.type());
-  /**
-   * Generated method.
-   */
-    embeddable.setStyle(optionSpecificData.style());
-  /**
-   * Generated method.
-   */
-    embeddable.setUnderlying(optionSpecificData.underlying());
-    return embeddable;
-  }
-
-  default tech.maze.data.markets.backend.domain.models.OptionSpecificData toDomain(
-      tech.maze.data.markets.backend.infrastructure.persistence.entities.OptionSpecificDataEmbeddable embeddable) {
+  default OptionSpecificData toDomain(OptionSpecificDataEmbeddable embeddable) {
     if (embeddable == null) {
       return null;
     }
-    return new tech.maze.data.markets.backend.domain.models.OptionSpecificData(
-        embeddable.getStrike() == null ? 0.0 : embeddable.getStrike(),
+    final Double strike = embeddable.getStrike();
+    final double strikeValue = strike == null ? 0.0 : strike;
+    return new OptionSpecificData(
+        strikeValue,
         embeddable.getExpiredAt(),
         embeddable.getType(),
         embeddable.getStyle(),
         embeddable.getUnderlying()
     );
+  }
+
+  /**
+   * Maps a market domain model into its entity representation.
+   */
+  MarketEntity toEntity(Market market);
+
+  /**
+   * Maps option specific data into its embeddable representation.
+   */
+  default OptionSpecificDataEmbeddable toEmbeddable(OptionSpecificData optionSpecificData) {
+    if (optionSpecificData == null) {
+      return null;
+    }
+    final OptionSpecificDataEmbeddable embeddable = new OptionSpecificDataEmbeddable();
+    embeddable.setStrike(optionSpecificData.strike());
+    embeddable.setExpiredAt(optionSpecificData.expiredAt());
+    embeddable.setType(optionSpecificData.type());
+    embeddable.setStyle(optionSpecificData.style());
+    embeddable.setUnderlying(optionSpecificData.underlying());
+    return embeddable;
   }
 }

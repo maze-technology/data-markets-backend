@@ -9,6 +9,7 @@ import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
 import tech.maze.data.markets.backend.domain.ports.out.SaveMarketPort;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
+import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
 import tech.maze.data.markets.backend.infrastructure.persistence.mappers.MarketEntityMapper;
 import tech.maze.data.markets.backend.infrastructure.persistence.repositories.MarketJpaRepository;
 
@@ -33,6 +34,7 @@ public class MarketPersistenceAdapter implements LoadMarketPort, SaveMarketPort,
 
   @Override
   public Market save(Market market) {
-    return marketEntityMapper.toDomain(marketJpaRepository.save(marketEntityMapper.toEntity(market)));
+    final MarketEntity saved = marketJpaRepository.save(marketEntityMapper.toEntity(market));
+    return marketEntityMapper.toDomain(saved);
   }
 }
