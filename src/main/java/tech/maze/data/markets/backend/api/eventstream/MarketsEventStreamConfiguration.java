@@ -44,7 +44,11 @@ public class MarketsEventStreamConfiguration {
         return;
       }
 
-      sendReply(event, Empty.getDefaultInstance(), tech.maze.dtos.markets.events.EventTypes.FETCH_MARKETS_REQUEST);
+      sendReply(
+          event,
+          Empty.getDefaultInstance(),
+          tech.maze.dtos.markets.events.EventTypes.FETCH_MARKETS_REQUEST
+      );
     };
   }
 
@@ -65,7 +69,11 @@ public class MarketsEventStreamConfiguration {
         return;
       }
 
-      sendReply(event, Empty.getDefaultInstance(), tech.maze.dtos.markets.events.EventTypes.SYNC_MARKETS_REQUEST);
+      sendReply(
+          event,
+          Empty.getDefaultInstance(),
+          tech.maze.dtos.markets.events.EventTypes.SYNC_MARKETS_REQUEST
+      );
     };
   }
 
