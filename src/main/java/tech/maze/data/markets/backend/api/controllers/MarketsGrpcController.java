@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
+import tech.maze.data.markets.backend.api.support.CriterionRequestIdExtractor;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.in.FindMarketUseCase;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
@@ -22,6 +23,7 @@ public class MarketsGrpcController
   FindMarketUseCase findMarketUseCase;
   SearchMarketsUseCase searchMarketsUseCase;
   MarketDtoMapper marketDtoMapper;
+  CriterionRequestIdExtractor criterionRequestIdExtractor;
 
   @Override
   public void findOne(
@@ -30,7 +32,7 @@ public class MarketsGrpcController
   ) {
     tech.maze.dtos.markets.requests.FindOneResponse.Builder responseBuilder =
         tech.maze.dtos.markets.requests.FindOneResponse.newBuilder();
-    java.util.UUID id = marketDtoMapper.toId(request);
+    java.util.UUID id = criterionRequestIdExtractor.extractId(request);
 
     if (id != null) {
       findMarketUseCase.findById(id)
