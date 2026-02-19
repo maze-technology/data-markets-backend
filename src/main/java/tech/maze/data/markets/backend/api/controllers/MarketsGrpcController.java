@@ -17,7 +17,7 @@ import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 @RequiredArgsConstructor
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class MarketsGrpcController extends tech.maze.dtos.markets.controllers.MarketsGrpc.MarketsImplBase {
+public class MarketsGrpcController extends tech.maze.dtos.markets.controllers.MarketsGRPCGrpc.MarketsGRPCImplBase {
   FindMarketUseCase findMarketUseCase;
   SearchMarketsUseCase searchMarketsUseCase;
   MarketDtoMapper marketDtoMapper;

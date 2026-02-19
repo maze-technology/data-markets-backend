@@ -1,8 +1,7 @@
 package tech.maze.data.markets.backend.api.eventstream;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.Empty;
 import io.cloudevents.CloudEvent;
-import io.cloudevents.CloudEventData;
 import io.micrometer.core.instrument.MeterRegistry;
 import java.util.function.Consumer;
 import lombok.AccessLevel;
@@ -45,14 +44,7 @@ public class MarketsEventStreamConfiguration {
         return;
       }
 
-      parseFetchRequest(event);
-      final var response = tech.maze.dtos.markets.payloads.FetchMarketsResponse.newBuilder()
-          .setSourceRequest(tech.maze.dtos.markets.payloads.FetchMarketsRequest.newBuilder().build())
-          .setKey("")
-          .setIsLast(true)
-          .setSkipped(0)
-          .build();
-      sendReply(event, response, tech.maze.dtos.markets.events.EventTypes.FETCH_MARKETS_REQUEST);
+      sendReply(event, Empty.getDefaultInstance(), tech.maze.dtos.markets.events.EventTypes.FETCH_MARKETS_REQUEST);
     };
   }
 
@@ -73,11 +65,7 @@ public class MarketsEventStreamConfiguration {
         return;
       }
 
-      parseSyncRequest(event);
-      final var response = tech.maze.dtos.markets.payloads.SyncMarketsResponse.newBuilder()
-          .setSkipped(0)
-          .build();
-      sendReply(event, response, tech.maze.dtos.markets.events.EventTypes.SYNC_MARKETS_REQUEST);
+      sendReply(event, Empty.getDefaultInstance(), tech.maze.dtos.markets.events.EventTypes.SYNC_MARKETS_REQUEST);
     };
   }
 
@@ -97,27 +85,4 @@ public class MarketsEventStreamConfiguration {
     }
   }
 
-  private static tech.maze.dtos.markets.payloads.FetchMarketsRequest parseFetchRequest(CloudEvent event) {
-    try {
-      return tech.maze.dtos.markets.payloads.FetchMarketsRequest.parseFrom(extractBytes(event));
-    } catch (InvalidProtocolBufferException ex) {
-      throw new IllegalArgumentException("Failed to decode FetchMarketsRequest payload", ex);
-    }
-  }
-
-  private static tech.maze.dtos.markets.payloads.SyncMarketsRequest parseSyncRequest(CloudEvent event) {
-    try {
-      return tech.maze.dtos.markets.payloads.SyncMarketsRequest.parseFrom(extractBytes(event));
-    } catch (InvalidProtocolBufferException ex) {
-      throw new IllegalArgumentException("Failed to decode SyncMarketsRequest payload", ex);
-    }
-  }
-
-  private static byte[] extractBytes(CloudEvent event) {
-    final CloudEventData data = event.getData();
-    if (data == null) {
-      throw new IllegalArgumentException("CloudEvent has no data");
-    }
-    return data.toBytes();
-  }
 }

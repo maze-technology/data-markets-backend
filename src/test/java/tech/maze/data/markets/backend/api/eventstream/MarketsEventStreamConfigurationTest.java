@@ -58,9 +58,7 @@ class MarketsEventStreamConfigurationTest {
         .withId("evt-fetch")
         .withSource(URI.create("urn:test"))
         .withType(tech.maze.dtos.markets.events.EventTypes.FETCH_MARKETS_REQUEST)
-        .withData(BytesCloudEventData.wrap(
-            tech.maze.dtos.markets.payloads.FetchMarketsRequest.newBuilder().build().toByteArray()
-        ))
+        .withData(BytesCloudEventData.wrap(com.google.protobuf.Empty.getDefaultInstance().toByteArray()))
         .build();
 
     when(eventSender.resolveReplyTo(event)).thenReturn("reply-topic");
@@ -78,9 +76,7 @@ class MarketsEventStreamConfigurationTest {
         .withId("evt-sync")
         .withSource(URI.create("urn:test"))
         .withType(tech.maze.dtos.markets.events.EventTypes.SYNC_MARKETS_REQUEST)
-        .withData(BytesCloudEventData.wrap(
-            tech.maze.dtos.markets.payloads.SyncMarketsRequest.newBuilder().build().toByteArray()
-        ))
+        .withData(BytesCloudEventData.wrap(com.google.protobuf.Empty.getDefaultInstance().toByteArray()))
         .build();
 
     when(eventSender.resolveReplyTo(event)).thenReturn("reply-topic");
