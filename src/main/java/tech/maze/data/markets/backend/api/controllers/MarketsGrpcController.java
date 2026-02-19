@@ -28,8 +28,9 @@ public class MarketsGrpcController
       tech.maze.dtos.markets.requests.FindOneRequest request,
       StreamObserver<tech.maze.dtos.markets.requests.FindOneResponse> responseObserver
   ) {
-    final var responseBuilder = tech.maze.dtos.markets.requests.FindOneResponse.newBuilder();
-    final var id = marketDtoMapper.toId(request);
+    tech.maze.dtos.markets.requests.FindOneResponse.Builder responseBuilder =
+        tech.maze.dtos.markets.requests.FindOneResponse.newBuilder();
+    java.util.UUID id = marketDtoMapper.toId(request);
 
     if (id != null) {
       findMarketUseCase.findById(id)
@@ -47,9 +48,10 @@ public class MarketsGrpcController
       StreamObserver<tech.maze.dtos.markets.requests.FindByDataProvidersResponse> responseObserver
   ) {
     final List<Market> markets = searchMarketsUseCase.findAll();
-    final var response = tech.maze.dtos.markets.requests.FindByDataProvidersResponse.newBuilder()
-        .addAllMarkets(markets.stream().map(marketDtoMapper::toDto).toList())
-        .build();
+    tech.maze.dtos.markets.requests.FindByDataProvidersResponse response =
+        tech.maze.dtos.markets.requests.FindByDataProvidersResponse.newBuilder()
+            .addAllMarkets(markets.stream().map(marketDtoMapper::toDto).toList())
+            .build();
 
     responseObserver.onNext(response);
     responseObserver.onCompleted();

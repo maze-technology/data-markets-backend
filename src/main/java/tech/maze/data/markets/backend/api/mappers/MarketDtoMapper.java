@@ -98,7 +98,8 @@ public class MarketDtoMapper {
   }
 
   private static Object getField(Message message, String fieldName) {
-    final var field = message.getDescriptorForType().findFieldByName(fieldName);
+    com.google.protobuf.Descriptors.FieldDescriptor field =
+        message.getDescriptorForType().findFieldByName(fieldName);
     if (field == null) {
       return null;
     }
@@ -106,20 +107,23 @@ public class MarketDtoMapper {
   }
 
   private static void setIfPresent(Message.Builder builder, String fieldName, Object value) {
-    final var field = builder.getDescriptorForType().findFieldByName(fieldName);
+    com.google.protobuf.Descriptors.FieldDescriptor field =
+        builder.getDescriptorForType().findFieldByName(fieldName);
     if (field != null && value != null) {
       builder.setField(field, value);
     }
   }
 
   private static void setEnumIfPresent(Message.Builder builder, String fieldName, String enumName) {
-    final var field = builder.getDescriptorForType().findFieldByName(fieldName);
+    com.google.protobuf.Descriptors.FieldDescriptor field =
+        builder.getDescriptorForType().findFieldByName(fieldName);
     if (field == null || enumName == null || !field.getJavaType().equals(
         com.google.protobuf.Descriptors.FieldDescriptor.JavaType.ENUM)) {
       return;
     }
 
-    final var value = field.getEnumType().findValueByName(enumName);
+    com.google.protobuf.Descriptors.EnumValueDescriptor value =
+        field.getEnumType().findValueByName(enumName);
     if (value != null) {
       builder.setField(field, value);
     }
