@@ -45,6 +45,9 @@ public interface MarketDtoMapper {
     return null;
   }
 
+  /**
+   * Converts UUID values to protobuf {@link Value} wrappers.
+   */
   @Named("uuidToValue")
   default Value uuidToValue(UUID value) {
     if (value == null) {
@@ -53,6 +56,9 @@ public interface MarketDtoMapper {
     return Value.newBuilder().setStringValue(value.toString()).build();
   }
 
+  /**
+   * Converts string values to protobuf {@link Value} wrappers.
+   */
   @Named("stringToValue")
   default Value stringToValue(String value) {
     if (value == null) {
@@ -61,6 +67,9 @@ public interface MarketDtoMapper {
     return Value.newBuilder().setStringValue(value).build();
   }
 
+  /**
+   * Converts domain market type values to DTO enum values.
+   */
   @Named("marketTypeToDto")
   default tech.maze.dtos.markets.enums.Type marketTypeToDto(MarketType value) {
     if (value == null) {
