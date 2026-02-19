@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
-import tech.maze.data.markets.backend.api.support.CriterionRequestIdExtractor;
+import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.domain.models.Market;
-import tech.maze.data.markets.backend.domain.ports.in.FindMarketUseCase;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 
 /**
@@ -20,10 +19,9 @@ import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class MarketsGrpcController
     extends tech.maze.dtos.markets.controllers.MarketsGRPCGrpc.MarketsGRPCImplBase {
-  FindMarketUseCase findMarketUseCase;
+  FindOneMarketSearchStrategyHandler findOneMarketSearchStrategyHandler;
   SearchMarketsUseCase searchMarketsUseCase;
   MarketDtoMapper marketDtoMapper;
-  CriterionRequestIdExtractor criterionRequestIdExtractor;
 
   @Override
   public void findOne(
@@ -32,10 +30,8 @@ public class MarketsGrpcController
   ) {
     tech.maze.dtos.markets.requests.FindOneResponse.Builder responseBuilder =
         tech.maze.dtos.markets.requests.FindOneResponse.newBuilder();
-    java.util.UUID id = criterionRequestIdExtractor.extractId(request);
-
-    if (id != null) {
-      findMarketUseCase.findById(id)
+    if (request.hasCriterion()) {
+      findOneMarketSearchStrategyHandler.handleSearch(request.getCriterion())
           .map(marketDtoMapper::toDto)
           .ifPresent(responseBuilder::setMarket);
     }
