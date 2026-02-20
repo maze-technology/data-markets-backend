@@ -28,23 +28,14 @@ public interface MarketJpaRepository extends JpaRepository<MarketEntity, UUID> {
    * Finds markets linked to any data provider ids.
    */
   @Query(
-      value = """
-          SELECT DISTINCT m.*
-          FROM markets m
-          WHERE EXISTS (
-            SELECT 1
-            FROM jsonb_array_elements(
-                COALESCE(m.data_providers_meta_datas::jsonb, '[]'::jsonb)
-            ) AS metadata
-            WHERE COALESCE(
-                metadata ->> 'dataProviderId',
-                metadata ->> 'data_provider_id'
-            ) IN (:dataProviderIds)
-          )
-          """,
-      nativeQuery = true
+      """
+          SELECT DISTINCT m
+          FROM MarketEntity m
+          JOIN m.dataProvidersMetaDatas d
+          WHERE d.dataProviderId IN :dataProviderIds
+          """
   )
   java.util.List<MarketEntity> findAllByDataProviderIds(
-      @Param("dataProviderIds") java.util.List<String> dataProviderIds
+      @Param("dataProviderIds") java.util.List<UUID> dataProviderIds
   );
 }

@@ -65,14 +65,14 @@ class MarketPersistenceAdapterTest {
   @Test
   void findByDataProviderIdsDelegatesToRepository() {
     final UUID dataProviderId = UUID.randomUUID();
-    when(marketJpaRepository.findAllByDataProviderIds(List.of(dataProviderId.toString()))).thenReturn(List.of(entity));
+    when(marketJpaRepository.findAllByDataProviderIds(List.of(dataProviderId))).thenReturn(List.of(entity));
     when(marketEntityMapper.toDomain(entity)).thenReturn(market);
 
     final var adapter = new MarketPersistenceAdapter(marketJpaRepository, marketEntityMapper);
     final var result = adapter.findByDataProviderIds(List.of(dataProviderId));
 
     assertThat(result).containsExactly(market);
-    verify(marketJpaRepository).findAllByDataProviderIds(List.of(dataProviderId.toString()));
+    verify(marketJpaRepository).findAllByDataProviderIds(List.of(dataProviderId));
   }
 
   @Test

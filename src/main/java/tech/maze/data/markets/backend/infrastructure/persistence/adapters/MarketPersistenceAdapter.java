@@ -56,10 +56,7 @@ public class MarketPersistenceAdapter implements LoadMarketPort, SaveMarketPort,
       return List.of();
     }
 
-    List<String> serializedDataProviderIds = dataProviderIds.stream()
-        .map(UUID::toString)
-        .toList();
-    return marketJpaRepository.findAllByDataProviderIds(serializedDataProviderIds).stream()
+    return marketJpaRepository.findAllByDataProviderIds(dataProviderIds).stream()
         .map(marketEntityMapper::toDomain)
         .toList();
   }
