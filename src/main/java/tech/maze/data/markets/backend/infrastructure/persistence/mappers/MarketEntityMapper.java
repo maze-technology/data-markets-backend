@@ -1,6 +1,7 @@
 package tech.maze.data.markets.backend.infrastructure.persistence.mappers;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
@@ -37,6 +38,7 @@ public interface MarketEntityMapper {
   /**
    * Maps a market domain model into its entity representation.
    */
+  @Mapping(target = "dataProvidersMetaDatas", ignore = true)
   MarketEntity toEntity(Market market);
 
   /**
