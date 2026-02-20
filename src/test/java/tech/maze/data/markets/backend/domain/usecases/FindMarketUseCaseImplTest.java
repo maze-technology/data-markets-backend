@@ -15,7 +15,7 @@ import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
 
 @ExtendWith(MockitoExtension.class)
-class FindMarketServiceTest {
+class FindMarketUseCaseImplTest {
   @Mock
   private LoadMarketPort loadMarketPort;
   @Mock
@@ -26,7 +26,7 @@ class FindMarketServiceTest {
     final UUID id = UUID.randomUUID();
     when(loadMarketPort.findById(id)).thenReturn(Optional.of(market));
 
-    final var service = new FindMarketService(loadMarketPort);
+    final var service = new FindMarketUseCaseImpl(loadMarketPort);
     final var result = service.findById(id);
 
     assertThat(result).contains(market);
@@ -38,7 +38,7 @@ class FindMarketServiceTest {
     when(loadMarketPort.findByTypeAndExchangeAndBaseAndQuote(MarketType.SPOT, "binance", "BTC", "USDT"))
         .thenReturn(Optional.of(market));
 
-    final var service = new FindMarketService(loadMarketPort);
+    final var service = new FindMarketUseCaseImpl(loadMarketPort);
     final var result = service.findByTypeAndExchangeAndBaseAndQuote(
         MarketType.SPOT,
         "binance",

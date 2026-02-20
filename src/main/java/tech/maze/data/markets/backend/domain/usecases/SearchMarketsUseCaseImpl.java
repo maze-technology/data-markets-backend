@@ -13,7 +13,7 @@ import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
  */
 @Service
 @RequiredArgsConstructor
-public class SearchMarketsService implements SearchMarketsUseCase {
+public class SearchMarketsUseCaseImpl implements SearchMarketsUseCase {
   private final SearchMarketsPort searchMarketsPort;
 
   @Override

@@ -14,7 +14,7 @@ import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
 
 @ExtendWith(MockitoExtension.class)
-class SearchMarketsServiceTest {
+class SearchMarketsUseCaseImplTest {
   @Mock
   private SearchMarketsPort searchMarketsPort;
   @Mock
@@ -24,7 +24,7 @@ class SearchMarketsServiceTest {
   void delegatesFindAll() {
     when(searchMarketsPort.findAll()).thenReturn(List.of(market));
 
-    final var service = new SearchMarketsService(searchMarketsPort);
+    final var service = new SearchMarketsUseCaseImpl(searchMarketsPort);
     final var result = service.findAll();
 
     assertThat(result).containsExactly(market);
@@ -36,7 +36,7 @@ class SearchMarketsServiceTest {
     final UUID dataProviderId = UUID.randomUUID();
     when(searchMarketsPort.findByDataProviderIds(List.of(dataProviderId))).thenReturn(List.of(market));
 
-    final var service = new SearchMarketsService(searchMarketsPort);
+    final var service = new SearchMarketsUseCaseImpl(searchMarketsPort);
     final var result = service.findByDataProviderIds(List.of(dataProviderId));
 
     assertThat(result).containsExactly(market);

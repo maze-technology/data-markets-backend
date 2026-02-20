@@ -12,7 +12,7 @@ import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.out.SaveMarketPort;
 
 @ExtendWith(MockitoExtension.class)
-class SaveMarketServiceTest {
+class SaveMarketUseCaseImplTest {
   @Mock
   private SaveMarketPort saveMarketPort;
   @Mock
@@ -22,7 +22,7 @@ class SaveMarketServiceTest {
   void delegatesSave() {
     when(saveMarketPort.save(market)).thenReturn(market);
 
-    final var service = new SaveMarketService(saveMarketPort);
+    final var service = new SaveMarketUseCaseImpl(saveMarketPort);
     final var result = service.save(market);
 
     assertThat(result).isSameAs(market);

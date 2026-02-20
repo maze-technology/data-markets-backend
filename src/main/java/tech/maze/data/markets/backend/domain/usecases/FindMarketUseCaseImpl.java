@@ -14,7 +14,7 @@ import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
  */
 @Service
 @RequiredArgsConstructor
-public class FindMarketService implements FindMarketUseCase {
+public class FindMarketUseCaseImpl implements FindMarketUseCase {
   private final LoadMarketPort loadMarketPort;
 
   @Override
