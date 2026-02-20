@@ -1,6 +1,7 @@
 package tech.maze.data.markets.backend.domain.usecases;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tech.maze.data.markets.backend.domain.models.Market;
@@ -18,5 +19,10 @@ public class SearchMarketsService implements SearchMarketsUseCase {
   @Override
   public List<Market> findAll() {
     return searchMarketsPort.findAll();
+  }
+
+  @Override
+  public List<Market> findByDataProviderIds(List<UUID> dataProviderIds) {
+    return searchMarketsPort.findByDataProviderIds(dataProviderIds);
   }
 }

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
 import tech.maze.data.markets.backend.infrastructure.persistence.mappers.MarketEntityMapper;
 import tech.maze.data.markets.backend.infrastructure.persistence.repositories.MarketJpaRepository;
@@ -50,6 +51,44 @@ class MarketPersistenceAdapterTest {
 
     assertThat(result).containsExactly(market);
     verify(marketJpaRepository).findAll();
+  }
+
+  @Test
+  void findByDataProviderIdsReturnsEmptyWhenInputIsEmpty() {
+    final var adapter = new MarketPersistenceAdapter(marketJpaRepository, marketEntityMapper);
+
+    final var result = adapter.findByDataProviderIds(List.of());
+
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void findByDataProviderIdsDelegatesToRepository() {
+    final UUID dataProviderId = UUID.randomUUID();
+    when(marketJpaRepository.findAllByDataProviderIds(List.of(dataProviderId.toString()))).thenReturn(List.of(entity));
+    when(marketEntityMapper.toDomain(entity)).thenReturn(market);
+
+    final var adapter = new MarketPersistenceAdapter(marketJpaRepository, marketEntityMapper);
+    final var result = adapter.findByDataProviderIds(List.of(dataProviderId));
+
+    assertThat(result).containsExactly(market);
+    verify(marketJpaRepository).findAllByDataProviderIds(List.of(dataProviderId.toString()));
+  }
+
+  @Test
+  void findByTypeAndExchangeAndBaseAndQuoteDelegatesToRepository() {
+    when(marketJpaRepository.findFirstByTypeAndExchangeIgnoreCaseAndBaseIgnoreCaseAndQuoteIgnoreCase(
+        MarketType.SPOT,
+        "binance",
+        "BTC",
+        "USDT"
+    )).thenReturn(Optional.of(entity));
+    when(marketEntityMapper.toDomain(entity)).thenReturn(market);
+
+    final var adapter = new MarketPersistenceAdapter(marketJpaRepository, marketEntityMapper);
+    final var result = adapter.findByTypeAndExchangeAndBaseAndQuote(MarketType.SPOT, "binance", "BTC", "USDT");
+
+    assertThat(result).contains(market);
   }
 
   @Test

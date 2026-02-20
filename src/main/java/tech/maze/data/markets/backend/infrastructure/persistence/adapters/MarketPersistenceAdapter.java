@@ -6,6 +6,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
 import tech.maze.data.markets.backend.domain.ports.out.SaveMarketPort;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
@@ -28,8 +29,39 @@ public class MarketPersistenceAdapter implements LoadMarketPort, SaveMarketPort,
   }
 
   @Override
+  public Optional<Market> findByTypeAndExchangeAndBaseAndQuote(
+      MarketType type,
+      String exchange,
+      String base,
+      String quote
+  ) {
+    return marketJpaRepository
+        .findFirstByTypeAndExchangeIgnoreCaseAndBaseIgnoreCaseAndQuoteIgnoreCase(
+            type,
+            exchange,
+            base,
+            quote
+        )
+        .map(marketEntityMapper::toDomain);
+  }
+
+  @Override
   public List<Market> findAll() {
     return marketJpaRepository.findAll().stream().map(marketEntityMapper::toDomain).toList();
+  }
+
+  @Override
+  public List<Market> findByDataProviderIds(List<UUID> dataProviderIds) {
+    if (dataProviderIds == null || dataProviderIds.isEmpty()) {
+      return List.of();
+    }
+
+    List<String> serializedDataProviderIds = dataProviderIds.stream()
+        .map(UUID::toString)
+        .toList();
+    return marketJpaRepository.findAllByDataProviderIds(serializedDataProviderIds).stream()
+        .map(marketEntityMapper::toDomain)
+        .toList();
   }
 
   @Override

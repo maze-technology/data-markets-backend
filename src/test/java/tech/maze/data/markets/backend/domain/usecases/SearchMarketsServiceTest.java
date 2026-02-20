@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -28,5 +29,17 @@ class SearchMarketsServiceTest {
 
     assertThat(result).containsExactly(market);
     verify(searchMarketsPort).findAll();
+  }
+
+  @Test
+  void delegatesFindByDataProviderIds() {
+    final UUID dataProviderId = UUID.randomUUID();
+    when(searchMarketsPort.findByDataProviderIds(List.of(dataProviderId))).thenReturn(List.of(market));
+
+    final var service = new SearchMarketsService(searchMarketsPort);
+    final var result = service.findByDataProviderIds(List.of(dataProviderId));
+
+    assertThat(result).containsExactly(market);
+    verify(searchMarketsPort).findByDataProviderIds(List.of(dataProviderId));
   }
 }

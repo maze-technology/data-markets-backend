@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,5 +31,22 @@ class FindMarketServiceTest {
 
     assertThat(result).contains(market);
     verify(loadMarketPort).findById(id);
+  }
+
+  @Test
+  void delegatesFindByTypeAndExchangeAndBaseAndQuote() {
+    when(loadMarketPort.findByTypeAndExchangeAndBaseAndQuote(MarketType.SPOT, "binance", "BTC", "USDT"))
+        .thenReturn(Optional.of(market));
+
+    final var service = new FindMarketService(loadMarketPort);
+    final var result = service.findByTypeAndExchangeAndBaseAndQuote(
+        MarketType.SPOT,
+        "binance",
+        "BTC",
+        "USDT"
+    );
+
+    assertThat(result).contains(market);
+    verify(loadMarketPort).findByTypeAndExchangeAndBaseAndQuote(MarketType.SPOT, "binance", "BTC", "USDT");
   }
 }

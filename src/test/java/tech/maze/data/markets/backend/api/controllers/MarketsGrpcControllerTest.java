@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
+import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
@@ -28,6 +29,8 @@ class MarketsGrpcControllerTest {
   private FindOneMarketSearchStrategyHandler findOneMarketSearchStrategyHandler;
   @Mock
   private SearchMarketsUseCase searchMarketsUseCase;
+  @Mock
+  private CriterionValueExtractor criterionValueExtractor;
   @Mock
   private MarketDtoMapper marketDtoMapper;
 
@@ -41,6 +44,7 @@ class MarketsGrpcControllerTest {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
+        criterionValueExtractor,
         marketDtoMapper
     );
     final UUID id = UUID.randomUUID();
@@ -78,6 +82,7 @@ class MarketsGrpcControllerTest {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
+        criterionValueExtractor,
         marketDtoMapper
     );
 
@@ -96,6 +101,7 @@ class MarketsGrpcControllerTest {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
+        criterionValueExtractor,
         marketDtoMapper
     );
     final var marketA = new Market(UUID.randomUUID(), MarketType.SPOT, "binance", "BTC", "USDT", null, Instant.now());
@@ -107,19 +113,25 @@ class MarketsGrpcControllerTest {
         .setBaseId(Value.newBuilder().setStringValue("ETH").build())
         .build();
 
-    when(searchMarketsUseCase.findAll()).thenReturn(List.of(marketA, marketB));
+    final UUID dataProviderA = UUID.randomUUID();
+    final UUID dataProviderB = UUID.randomUUID();
+    final var request = tech.maze.dtos.markets.requests.FindByDataProvidersRequest.newBuilder()
+        .addDataProviders(Value.newBuilder().setStringValue(dataProviderA.toString()).build())
+        .addDataProviders(Value.newBuilder().setStringValue(dataProviderB.toString()).build())
+        .build();
+    when(criterionValueExtractor.extractUuids(request.getDataProvidersList())).thenReturn(List.of(dataProviderA, dataProviderB));
+    when(searchMarketsUseCase.findByDataProviderIds(List.of(dataProviderA, dataProviderB))).thenReturn(List.of(marketA, marketB));
     when(marketDtoMapper.toDto(marketA)).thenReturn(dtoA);
     when(marketDtoMapper.toDto(marketB)).thenReturn(dtoB);
 
-    controller.findByDataProviders(
-        tech.maze.dtos.markets.requests.FindByDataProvidersRequest.newBuilder().build(),
-        findByProvidersObserver
-    );
+    controller.findByDataProviders(request, findByProvidersObserver);
 
     final ArgumentCaptor<tech.maze.dtos.markets.requests.FindByDataProvidersResponse> captor =
         ArgumentCaptor.forClass(tech.maze.dtos.markets.requests.FindByDataProvidersResponse.class);
     verify(findByProvidersObserver).onNext(captor.capture());
     verify(findByProvidersObserver).onCompleted();
+    verify(criterionValueExtractor).extractUuids(request.getDataProvidersList());
+    verify(searchMarketsUseCase).findByDataProviderIds(List.of(dataProviderA, dataProviderB));
     assertThat(captor.getValue().getMarketsList()).containsExactly(dtoA, dtoB);
   }
 }
