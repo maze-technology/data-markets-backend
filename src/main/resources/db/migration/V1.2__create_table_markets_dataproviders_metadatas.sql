@@ -14,6 +14,3 @@ create table if not exists public.markets_dataproviders_metadatas
 
 create unique index if not exists index_unique_markets_dataproviders_metadatas_market_provider
   on public.markets_dataproviders_metadatas(market_id, data_provider_id);
-
-create index if not exists index_markets_dataproviders_metadatas_provider
-  on public.markets_dataproviders_metadatas(data_provider_id);

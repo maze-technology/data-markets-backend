@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import tech.maze.commons.exceptions.GrpcStatusException;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
@@ -31,13 +32,15 @@ public class MarketsGrpcController
       tech.maze.dtos.markets.requests.FindOneRequest request,
       StreamObserver<tech.maze.dtos.markets.requests.FindOneResponse> responseObserver
   ) {
+    if (!request.hasCriterion()) {
+      throw GrpcStatusException.invalidArgument("criterion is required");
+    }
+
     tech.maze.dtos.markets.requests.FindOneResponse.Builder responseBuilder =
         tech.maze.dtos.markets.requests.FindOneResponse.newBuilder();
-    if (request.hasCriterion()) {
-      findOneMarketSearchStrategyHandler.handleSearch(request.getCriterion())
-          .map(marketDtoMapper::toDto)
-          .ifPresent(responseBuilder::setMarket);
-    }
+    findOneMarketSearchStrategyHandler.handleSearch(request.getCriterion())
+        .map(marketDtoMapper::toDto)
+        .ifPresent(responseBuilder::setMarket);
 
     responseObserver.onNext(responseBuilder.build());
     responseObserver.onCompleted();

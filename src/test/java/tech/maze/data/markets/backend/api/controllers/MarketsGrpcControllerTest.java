@@ -1,6 +1,7 @@
 package tech.maze.data.markets.backend.api.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tech.maze.commons.exceptions.GrpcStatusException;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
@@ -79,7 +81,7 @@ class MarketsGrpcControllerTest {
   }
 
   @Test
-  void findOneReturnsEmptyResponseWhenCriterionMissing() {
+  void findOneThrowsWhenCriterionMissing() {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
@@ -87,14 +89,14 @@ class MarketsGrpcControllerTest {
         marketDtoMapper
     );
 
-    controller.findOne(tech.maze.dtos.markets.requests.FindOneRequest.newBuilder().build(), findOneObserver);
-
-    final ArgumentCaptor<tech.maze.dtos.markets.requests.FindOneResponse> captor =
-        ArgumentCaptor.forClass(tech.maze.dtos.markets.requests.FindOneResponse.class);
-    verify(findOneObserver).onNext(captor.capture());
-    verify(findOneObserver).onCompleted();
+    assertThatThrownBy(() -> controller.findOne(
+        tech.maze.dtos.markets.requests.FindOneRequest.newBuilder().build(),
+        findOneObserver
+    ))
+        .isInstanceOf(GrpcStatusException.class)
+        .hasMessageContaining("criterion is required");
     verifyNoInteractions(findOneMarketSearchStrategyHandler, marketDtoMapper);
-    assertThat(captor.getValue().hasMarket()).isFalse();
+    verifyNoInteractions(findOneObserver);
   }
 
   @Test
