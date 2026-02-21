@@ -2,8 +2,6 @@ package tech.maze.data.markets.backend.api.mappers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.protobuf.Value;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.MarketType;
@@ -15,24 +13,6 @@ class MarketDtoMapperTest {
       return null;
     }
   };
-
-  @Test
-  void uuidToValueReturnsDefaultForNull() {
-    assertThat(mapper.uuidToValue(null)).isEqualTo(Value.getDefaultInstance());
-  }
-
-  @Test
-  void uuidToValueReturnsStringValueForUuid() {
-    final UUID id = UUID.randomUUID();
-
-    assertThat(mapper.uuidToValue(id).getStringValue()).isEqualTo(id.toString());
-  }
-
-  @Test
-  void stringToValueReturnsDefaultForNullAndStringForValue() {
-    assertThat(mapper.stringToValue(null)).isEqualTo(Value.getDefaultInstance());
-    assertThat(mapper.stringToValue("binance").getStringValue()).isEqualTo("binance");
-  }
 
   @Test
   void marketTypeToDtoMapsValues() {

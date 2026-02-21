@@ -12,12 +12,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
+import org.mapstruct.factory.Mappers;
+import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.in.FindMarketUseCase;
 
 @ExtendWith(MockitoExtension.class)
 class FindOneMarketByIdSearchStrategyTest {
+  private static final ProtobufValueMapper PROTOBUF_VALUE_MAPPER =
+      Mappers.getMapper(ProtobufValueMapper.class);
+
   @Mock
   private FindMarketUseCase findMarketUseCase;
   @Mock
@@ -25,7 +29,7 @@ class FindOneMarketByIdSearchStrategyTest {
 
   @Test
   void supportsOnlyCriterionWithByIdStringValue() {
-    final var strategy = new FindOneMarketByIdSearchStrategy(findMarketUseCase, new CriterionValueExtractor());
+    final var strategy = new FindOneMarketByIdSearchStrategy(findMarketUseCase, PROTOBUF_VALUE_MAPPER);
     final var valid = criterionWithId(UUID.randomUUID().toString());
 
     assertThat(strategy.supports(valid)).isTrue();
@@ -35,7 +39,7 @@ class FindOneMarketByIdSearchStrategyTest {
 
   @Test
   void searchDelegatesToFindUseCaseForValidUuid() {
-    final var strategy = new FindOneMarketByIdSearchStrategy(findMarketUseCase, new CriterionValueExtractor());
+    final var strategy = new FindOneMarketByIdSearchStrategy(findMarketUseCase, PROTOBUF_VALUE_MAPPER);
     final UUID id = UUID.randomUUID();
     final var criterion = criterionWithId(id.toString());
     when(findMarketUseCase.findById(id)).thenReturn(Optional.of(market));
@@ -48,7 +52,7 @@ class FindOneMarketByIdSearchStrategyTest {
 
   @Test
   void searchReturnsEmptyWhenUuidIsInvalid() {
-    final var strategy = new FindOneMarketByIdSearchStrategy(findMarketUseCase, new CriterionValueExtractor());
+    final var strategy = new FindOneMarketByIdSearchStrategy(findMarketUseCase, PROTOBUF_VALUE_MAPPER);
 
     final var result = strategy.search(criterionWithId("not-a-uuid"));
 

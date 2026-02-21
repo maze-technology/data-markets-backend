@@ -3,7 +3,7 @@ package tech.maze.data.markets.backend.api.search;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
+import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.ports.in.FindMarketUseCase;
 import tech.maze.dtos.markets.search.Criterion;
@@ -15,7 +15,7 @@ import tech.maze.dtos.markets.search.Criterion;
 @RequiredArgsConstructor
 public class FindOneMarketByIdSearchStrategy implements FindOneMarketSearchStrategy {
   private final FindMarketUseCase findMarketUseCase;
-  private final CriterionValueExtractor criterionValueExtractor;
+  private final ProtobufValueMapper protobufValueMapper;
 
   @Override
   public boolean supports(Criterion criterion) {
@@ -27,7 +27,7 @@ public class FindOneMarketByIdSearchStrategy implements FindOneMarketSearchStrat
 
   @Override
   public Optional<Market> search(Criterion criterion) {
-    return criterionValueExtractor.extractUuid(criterion.getFilter().getById())
+    return protobufValueMapper.toUuid(criterion.getFilter().getById())
         .flatMap(findMarketUseCase::findById);
   }
 }

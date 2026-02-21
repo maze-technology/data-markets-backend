@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import tech.maze.commons.exceptions.GrpcStatusException;
+import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.commons.pagination.Pagination;
 import tech.maze.commons.pagination.PaginationUtils;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
-import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
@@ -26,7 +26,7 @@ public class MarketsGrpcController
     extends tech.maze.dtos.markets.controllers.MarketsGRPCGrpc.MarketsGRPCImplBase {
   FindOneMarketSearchStrategyHandler findOneMarketSearchStrategyHandler;
   SearchMarketsUseCase searchMarketsUseCase;
-  CriterionValueExtractor criterionValueExtractor;
+  ProtobufValueMapper protobufValueMapper;
   MarketDtoMapper marketDtoMapper;
 
   @Override
@@ -54,10 +54,10 @@ public class MarketsGrpcController
       StreamObserver<tech.maze.dtos.markets.requests.FindByDataProvidersResponse> responseObserver
   ) {
     final List<java.util.UUID> dataProviderIds =
-        criterionValueExtractor.extractUuids(request.getDataProvidersList());
+        protobufValueMapper.toUuids(request.getDataProvidersList());
     final Pagination pagination = PaginationUtils.normalize(
-        request.hasPagination() ? request.getPagination().getPage() : 0L,
-        request.hasPagination() ? request.getPagination().getLimit() : 50L,
+        request.hasPagination() ? request.getPagination().getPage() : 0,
+        request.hasPagination() ? request.getPagination().getLimit() : 50,
         50
     );
     final MarketsPage marketsPage = searchMarketsUseCase.findByDataProviderIds(

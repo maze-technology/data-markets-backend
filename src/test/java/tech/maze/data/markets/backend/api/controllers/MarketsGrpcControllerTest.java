@@ -18,9 +18,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.commons.exceptions.GrpcStatusException;
+import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
-import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.models.MarketType;
@@ -33,7 +33,7 @@ class MarketsGrpcControllerTest {
   @Mock
   private SearchMarketsUseCase searchMarketsUseCase;
   @Mock
-  private CriterionValueExtractor criterionValueExtractor;
+  private ProtobufValueMapper protobufValueMapper;
   @Mock
   private MarketDtoMapper marketDtoMapper;
 
@@ -47,7 +47,7 @@ class MarketsGrpcControllerTest {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
-        criterionValueExtractor,
+        protobufValueMapper,
         marketDtoMapper
     );
     final UUID id = UUID.randomUUID();
@@ -85,7 +85,7 @@ class MarketsGrpcControllerTest {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
-        criterionValueExtractor,
+        protobufValueMapper,
         marketDtoMapper
     );
 
@@ -104,7 +104,7 @@ class MarketsGrpcControllerTest {
     final var controller = new MarketsGrpcController(
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
-        criterionValueExtractor,
+        protobufValueMapper,
         marketDtoMapper
     );
     final var marketA = new Market(UUID.randomUUID(), MarketType.SPOT, "binance", "BTC", "USDT", null, Instant.now());
@@ -128,7 +128,7 @@ class MarketsGrpcControllerTest {
                 .build()
         )
         .build();
-    when(criterionValueExtractor.extractUuids(request.getDataProvidersList())).thenReturn(List.of(dataProviderA, dataProviderB));
+    when(protobufValueMapper.toUuids(request.getDataProvidersList())).thenReturn(List.of(dataProviderA, dataProviderB));
     when(searchMarketsUseCase.findByDataProviderIds(List.of(dataProviderA, dataProviderB), 0, 50))
         .thenReturn(new MarketsPage(List.of(marketA, marketB), 2, 1));
     when(marketDtoMapper.toDto(marketA)).thenReturn(dtoA);
@@ -140,7 +140,7 @@ class MarketsGrpcControllerTest {
         ArgumentCaptor.forClass(tech.maze.dtos.markets.requests.FindByDataProvidersResponse.class);
     verify(findByProvidersObserver).onNext(captor.capture());
     verify(findByProvidersObserver).onCompleted();
-    verify(criterionValueExtractor).extractUuids(request.getDataProvidersList());
+    verify(protobufValueMapper).toUuids(request.getDataProvidersList());
     verify(searchMarketsUseCase).findByDataProviderIds(List.of(dataProviderA, dataProviderB), 0, 50);
     assertThat(captor.getValue().getMarketsList()).containsExactly(dtoA, dtoB);
     assertThat(captor.getValue().getPaginationInfos().getTotalElements()).isEqualTo(2);

@@ -13,13 +13,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.data.markets.backend.api.mappers.MarketTypeDtoMapper;
-import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
+import org.mapstruct.factory.Mappers;
+import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.ports.in.FindMarketUseCase;
 
 @ExtendWith(MockitoExtension.class)
 class FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategyTest {
+  private static final ProtobufValueMapper PROTOBUF_VALUE_MAPPER =
+      Mappers.getMapper(ProtobufValueMapper.class);
+
   @Mock
   private FindMarketUseCase findMarketUseCase;
   @Mock
@@ -30,7 +34,7 @@ class FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategyTest {
     final var strategy = new FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategy(
         findMarketUseCase,
         new MarketTypeDtoMapper(),
-        new CriterionValueExtractor()
+        PROTOBUF_VALUE_MAPPER
     );
     final var valid = criterion("binance", "BTC", "USDT", tech.maze.dtos.markets.enums.Type.SPOT);
 
@@ -43,7 +47,7 @@ class FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategyTest {
     final var strategy = new FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategy(
         findMarketUseCase,
         new MarketTypeDtoMapper(),
-        new CriterionValueExtractor()
+        PROTOBUF_VALUE_MAPPER
     );
     final var criterion = criterion("binance", "BTC", "USDT", tech.maze.dtos.markets.enums.Type.SPOT);
     when(findMarketUseCase.findByTypeAndExchangeAndBaseAndQuote(MarketType.SPOT, "binance", "BTC", "USDT"))
@@ -60,7 +64,7 @@ class FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategyTest {
     final var strategy = new FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategy(
         findMarketUseCase,
         new MarketTypeDtoMapper(),
-        new CriterionValueExtractor()
+        PROTOBUF_VALUE_MAPPER
     );
     final var criterion = criterionWithUnknownType("binance", "BTC", "USDT");
 

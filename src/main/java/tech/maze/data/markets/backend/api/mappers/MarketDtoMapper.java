@@ -1,7 +1,5 @@
 package tech.maze.data.markets.backend.api.mappers;
 
-import com.google.protobuf.Value;
-import java.util.UUID;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -10,6 +8,7 @@ import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import tech.maze.commons.mappers.BaseDtoMapper;
+import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.domain.models.Market;
 import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
@@ -24,7 +23,8 @@ import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = {
-      BaseDtoMapper.class
+      BaseDtoMapper.class,
+      ProtobufValueMapper.class
     }
 )
 public interface MarketDtoMapper {
@@ -43,28 +43,6 @@ public interface MarketDtoMapper {
    */
   default OptionSpecificData toOptionSpecificData(tech.maze.dtos.markets.models.Market market) {
     return null;
-  }
-
-  /**
-   * Converts UUID values to protobuf {@link Value} wrappers.
-   */
-  @Named("uuidToValue")
-  default Value uuidToValue(UUID value) {
-    if (value == null) {
-      return Value.getDefaultInstance();
-    }
-    return Value.newBuilder().setStringValue(value.toString()).build();
-  }
-
-  /**
-   * Converts string values to protobuf {@link Value} wrappers.
-   */
-  @Named("stringToValue")
-  default Value stringToValue(String value) {
-    if (value == null) {
-      return Value.getDefaultInstance();
-    }
-    return Value.newBuilder().setStringValue(value).build();
   }
 
   /**
