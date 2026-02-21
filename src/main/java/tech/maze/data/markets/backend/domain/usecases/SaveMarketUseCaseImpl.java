@@ -11,7 +11,7 @@ import tech.maze.data.markets.backend.domain.ports.out.SaveMarketPort;
  */
 @Service
 @RequiredArgsConstructor
-public class SaveMarketService implements SaveMarketUseCase {
+public class SaveMarketUseCaseImpl implements SaveMarketUseCase {
   private final SaveMarketPort saveMarketPort;
 
   @Override

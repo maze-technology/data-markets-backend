@@ -6,8 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,4 +46,7 @@ public class MarketEntity {
 
   @Column(name = "created_at", nullable = false)
   private Instant createdAt;
+
+  @OneToMany(mappedBy = "market")
+  private List<MarketDataProviderMetaDataEntity> dataProvidersMetaDatas;
 }

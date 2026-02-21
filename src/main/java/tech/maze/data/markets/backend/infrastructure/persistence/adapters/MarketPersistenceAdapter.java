@@ -4,8 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketType;
+import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.ports.out.LoadMarketPort;
 import tech.maze.data.markets.backend.domain.ports.out.SaveMarketPort;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
@@ -28,8 +32,41 @@ public class MarketPersistenceAdapter implements LoadMarketPort, SaveMarketPort,
   }
 
   @Override
+  public Optional<Market> findByTypeAndExchangeAndBaseAndQuote(
+      MarketType type,
+      String exchange,
+      String base,
+      String quote
+  ) {
+    return marketJpaRepository
+        .findFirstByTypeAndExchangeIgnoreCaseAndBaseIgnoreCaseAndQuoteIgnoreCase(
+            type,
+            exchange,
+            base,
+            quote
+        )
+        .map(marketEntityMapper::toDomain);
+  }
+
+  @Override
   public List<Market> findAll() {
     return marketJpaRepository.findAll().stream().map(marketEntityMapper::toDomain).toList();
+  }
+
+  @Override
+  public MarketsPage findByDataProviderIds(List<UUID> dataProviderIds, int page, int limit) {
+    if (dataProviderIds == null || dataProviderIds.isEmpty()) {
+      return new MarketsPage(List.of(), 0, 0);
+    }
+
+    final Page<MarketEntity> results = marketJpaRepository.findAllByDataProviderIds(
+        dataProviderIds,
+        PageRequest.of(page, limit)
+    );
+    final List<Market> markets = results.getContent().stream()
+        .map(marketEntityMapper::toDomain)
+        .toList();
+    return new MarketsPage(markets, results.getTotalElements(), results.getTotalPages());
   }
 
   @Override
