@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.infrastructure.persistence.entities.MarketEntity;
 import tech.maze.data.markets.backend.infrastructure.persistence.mappers.MarketEntityMapper;
@@ -57,22 +60,23 @@ class MarketPersistenceAdapterTest {
   void findByDataProviderIdsReturnsEmptyWhenInputIsEmpty() {
     final var adapter = new MarketPersistenceAdapter(marketJpaRepository, marketEntityMapper);
 
-    final var result = adapter.findByDataProviderIds(List.of());
+    final var result = adapter.findByDataProviderIds(List.of(), 0, 50);
 
-    assertThat(result).isEmpty();
+    assertThat(result).isEqualTo(new MarketsPage(List.of(), 0, 0));
   }
 
   @Test
   void findByDataProviderIdsDelegatesToRepository() {
     final UUID dataProviderId = UUID.randomUUID();
-    when(marketJpaRepository.findAllByDataProviderIds(List.of(dataProviderId))).thenReturn(List.of(entity));
+    when(marketJpaRepository.findAllByDataProviderIds(List.of(dataProviderId), PageRequest.of(0, 50)))
+        .thenReturn(new PageImpl<>(List.of(entity), PageRequest.of(0, 50), 1));
     when(marketEntityMapper.toDomain(entity)).thenReturn(market);
 
     final var adapter = new MarketPersistenceAdapter(marketJpaRepository, marketEntityMapper);
-    final var result = adapter.findByDataProviderIds(List.of(dataProviderId));
+    final var result = adapter.findByDataProviderIds(List.of(dataProviderId), 0, 50);
 
-    assertThat(result).containsExactly(market);
-    verify(marketJpaRepository).findAllByDataProviderIds(List.of(dataProviderId));
+    assertThat(result).isEqualTo(new MarketsPage(List.of(market), 1, 1));
+    verify(marketJpaRepository).findAllByDataProviderIds(List.of(dataProviderId), PageRequest.of(0, 50));
   }
 
   @Test

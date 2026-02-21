@@ -5,6 +5,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
 
@@ -22,7 +23,7 @@ public class SearchMarketsUseCaseImpl implements SearchMarketsUseCase {
   }
 
   @Override
-  public List<Market> findByDataProviderIds(List<UUID> dataProviderIds) {
-    return searchMarketsPort.findByDataProviderIds(dataProviderIds);
+  public MarketsPage findByDataProviderIds(List<UUID> dataProviderIds, int page, int limit) {
+    return searchMarketsPort.findByDataProviderIds(dataProviderIds, page, limit);
   }
 }

@@ -20,6 +20,7 @@ import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 
@@ -120,7 +121,8 @@ class MarketsGrpcControllerTest {
         .addDataProviders(Value.newBuilder().setStringValue(dataProviderB.toString()).build())
         .build();
     when(criterionValueExtractor.extractUuids(request.getDataProvidersList())).thenReturn(List.of(dataProviderA, dataProviderB));
-    when(searchMarketsUseCase.findByDataProviderIds(List.of(dataProviderA, dataProviderB))).thenReturn(List.of(marketA, marketB));
+    when(searchMarketsUseCase.findByDataProviderIds(List.of(dataProviderA, dataProviderB), 0, 50))
+        .thenReturn(new MarketsPage(List.of(marketA, marketB), 2, 1));
     when(marketDtoMapper.toDto(marketA)).thenReturn(dtoA);
     when(marketDtoMapper.toDto(marketB)).thenReturn(dtoB);
 
@@ -131,7 +133,7 @@ class MarketsGrpcControllerTest {
     verify(findByProvidersObserver).onNext(captor.capture());
     verify(findByProvidersObserver).onCompleted();
     verify(criterionValueExtractor).extractUuids(request.getDataProvidersList());
-    verify(searchMarketsUseCase).findByDataProviderIds(List.of(dataProviderA, dataProviderB));
+    verify(searchMarketsUseCase).findByDataProviderIds(List.of(dataProviderA, dataProviderB), 0, 50);
     assertThat(captor.getValue().getMarketsList()).containsExactly(dtoA, dtoB);
   }
 }

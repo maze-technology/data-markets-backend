@@ -1,6 +1,8 @@
 package tech.maze.data.markets.backend.infrastructure.persistence.repositories;
 
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,14 +30,23 @@ public interface MarketJpaRepository extends JpaRepository<MarketEntity, UUID> {
    * Finds markets linked to any data provider ids.
    */
   @Query(
-      """
+      value =
+          """
           SELECT DISTINCT m
           FROM MarketEntity m
           JOIN m.dataProvidersMetaDatas d
           WHERE d.dataProviderId IN :dataProviderIds
+          """,
+      countQuery =
           """
+              SELECT COUNT(DISTINCT m.id)
+              FROM MarketEntity m
+              JOIN m.dataProvidersMetaDatas d
+              WHERE d.dataProviderId IN :dataProviderIds
+              """
   )
-  java.util.List<MarketEntity> findAllByDataProviderIds(
-      @Param("dataProviderIds") java.util.List<UUID> dataProviderIds
+  Page<MarketEntity> findAllByDataProviderIds(
+      @Param("dataProviderIds") java.util.List<UUID> dataProviderIds,
+      Pageable pageable
   );
 }

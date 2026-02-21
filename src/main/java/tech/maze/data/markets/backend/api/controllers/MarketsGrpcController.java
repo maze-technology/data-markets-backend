@@ -10,6 +10,7 @@ import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.api.support.CriterionValueExtractor;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.ports.in.SearchMarketsUseCase;
 
 /**
@@ -49,7 +50,14 @@ public class MarketsGrpcController
   ) {
     final List<java.util.UUID> dataProviderIds =
         criterionValueExtractor.extractUuids(request.getDataProvidersList());
-    final List<Market> markets = searchMarketsUseCase.findByDataProviderIds(dataProviderIds);
+    final int page = 0;
+    final int limit = 50;
+    final MarketsPage marketsPage = searchMarketsUseCase.findByDataProviderIds(
+        dataProviderIds,
+        page,
+        limit
+    );
+    final List<Market> markets = marketsPage.markets();
     tech.maze.dtos.markets.requests.FindByDataProvidersResponse response =
         tech.maze.dtos.markets.requests.FindByDataProvidersResponse.newBuilder()
             .addAllMarkets(markets.stream().map(marketDtoMapper::toDto).toList())

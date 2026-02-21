@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.data.markets.backend.domain.models.Market;
+import tech.maze.data.markets.backend.domain.models.MarketsPage;
 import tech.maze.data.markets.backend.domain.ports.out.SearchMarketsPort;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,12 +35,14 @@ class SearchMarketsUseCaseImplTest {
   @Test
   void delegatesFindByDataProviderIds() {
     final UUID dataProviderId = UUID.randomUUID();
-    when(searchMarketsPort.findByDataProviderIds(List.of(dataProviderId))).thenReturn(List.of(market));
+    final MarketsPage expected = new MarketsPage(List.of(market), 1, 1);
+    when(searchMarketsPort.findByDataProviderIds(List.of(dataProviderId), 0, 50))
+        .thenReturn(expected);
 
     final var service = new SearchMarketsUseCaseImpl(searchMarketsPort);
-    final var result = service.findByDataProviderIds(List.of(dataProviderId));
+    final var result = service.findByDataProviderIds(List.of(dataProviderId), 0, 50);
 
-    assertThat(result).containsExactly(market);
-    verify(searchMarketsPort).findByDataProviderIds(List.of(dataProviderId));
+    assertThat(result).isEqualTo(expected);
+    verify(searchMarketsPort).findByDataProviderIds(List.of(dataProviderId), 0, 50);
   }
 }
