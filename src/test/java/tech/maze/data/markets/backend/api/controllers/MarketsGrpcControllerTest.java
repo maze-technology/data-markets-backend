@@ -121,6 +121,12 @@ class MarketsGrpcControllerTest {
     final var request = tech.maze.dtos.markets.requests.FindByDataProvidersRequest.newBuilder()
         .addDataProviders(Value.newBuilder().setStringValue(dataProviderA.toString()).build())
         .addDataProviders(Value.newBuilder().setStringValue(dataProviderB.toString()).build())
+        .setPagination(
+            tech.maze.dtos.commons.search.Pagination.newBuilder()
+                .setPage(0)
+                .setLimit(50)
+                .build()
+        )
         .build();
     when(criterionValueExtractor.extractUuids(request.getDataProvidersList())).thenReturn(List.of(dataProviderA, dataProviderB));
     when(searchMarketsUseCase.findByDataProviderIds(List.of(dataProviderA, dataProviderB), 0, 50))
@@ -137,5 +143,7 @@ class MarketsGrpcControllerTest {
     verify(criterionValueExtractor).extractUuids(request.getDataProvidersList());
     verify(searchMarketsUseCase).findByDataProviderIds(List.of(dataProviderA, dataProviderB), 0, 50);
     assertThat(captor.getValue().getMarketsList()).containsExactly(dtoA, dtoB);
+    assertThat(captor.getValue().getPaginationInfos().getTotalElements()).isEqualTo(2);
+    assertThat(captor.getValue().getPaginationInfos().getTotalPages()).isEqualTo(1);
   }
 }
