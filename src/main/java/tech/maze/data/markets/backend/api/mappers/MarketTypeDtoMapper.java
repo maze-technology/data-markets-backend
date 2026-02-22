@@ -15,7 +15,7 @@ public class MarketTypeDtoMapper {
   @Named("marketTypeToDto")
   public tech.maze.dtos.markets.enums.Type toDto(MarketType value) {
     if (value == null) {
-      return tech.maze.dtos.markets.enums.Type.UNRECOGNIZED;
+      throw new IllegalArgumentException("marketType must not be null");
     }
 
     return switch (value) {
@@ -23,6 +23,7 @@ public class MarketTypeDtoMapper {
       case PERP -> tech.maze.dtos.markets.enums.Type.PERPETUAL;
       case FUTURES -> tech.maze.dtos.markets.enums.Type.PERPETUAL;
       case OPTION -> tech.maze.dtos.markets.enums.Type.PERPETUAL;
+      default -> throw new IllegalArgumentException("marketType must be defined");
     };
   }
 
@@ -31,13 +32,13 @@ public class MarketTypeDtoMapper {
    */
   public MarketType toDomain(tech.maze.dtos.markets.enums.Type value) {
     if (value == null) {
-      return null;
+      throw new IllegalArgumentException("marketType must not be null");
     }
 
     return switch (value) {
       case SPOT -> MarketType.SPOT;
       case PERPETUAL -> MarketType.PERP;
-      case UNRECOGNIZED -> null;
+      case UNRECOGNIZED -> throw new IllegalArgumentException("marketType must be defined");
       default -> throw new IllegalArgumentException("marketType must be defined");
     };
   }

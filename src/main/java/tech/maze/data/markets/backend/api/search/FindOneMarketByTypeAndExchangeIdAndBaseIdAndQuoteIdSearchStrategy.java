@@ -71,6 +71,10 @@ public class FindOneMarketByTypeAndExchangeIdAndBaseIdAndQuoteIdSearchStrategy
       return Optional.empty();
     }
 
-    return Optional.ofNullable(marketTypeDtoMapper.toDomain(filter.getEnum()));
+    try {
+      return Optional.ofNullable(marketTypeDtoMapper.toDomain(filter.getEnum()));
+    } catch (IllegalArgumentException ex) {
+      return Optional.empty();
+    }
   }
 }
