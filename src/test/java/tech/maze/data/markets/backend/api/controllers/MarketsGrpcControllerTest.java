@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tech.maze.commons.exceptions.GrpcStatusException;
 import tech.maze.commons.mappers.ProtobufValueMapper;
+import tech.maze.data.markets.backend.AppProperties;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.domain.models.Market;
@@ -48,7 +49,8 @@ class MarketsGrpcControllerTest {
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
         protobufValueMapper,
-        marketDtoMapper
+        marketDtoMapper,
+        appProperties()
     );
     final UUID id = UUID.randomUUID();
     final var request = tech.maze.dtos.markets.requests.FindOneRequest.newBuilder()
@@ -86,7 +88,8 @@ class MarketsGrpcControllerTest {
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
         protobufValueMapper,
-        marketDtoMapper
+        marketDtoMapper,
+        appProperties()
     );
 
     assertThatThrownBy(() -> controller.findOne(
@@ -105,7 +108,8 @@ class MarketsGrpcControllerTest {
         findOneMarketSearchStrategyHandler,
         searchMarketsUseCase,
         protobufValueMapper,
-        marketDtoMapper
+        marketDtoMapper,
+        appProperties()
     );
     final var marketA = new Market(UUID.randomUUID(), MarketType.SPOT, "binance", "BTC", "USDT", null, Instant.now());
     final var marketB = new Market(UUID.randomUUID(), MarketType.PERP, "bybit", "ETH", "USDT", null, Instant.now());
@@ -145,5 +149,11 @@ class MarketsGrpcControllerTest {
     assertThat(captor.getValue().getMarketsList()).containsExactly(dtoA, dtoB);
     assertThat(captor.getValue().getPaginationInfos().getTotalElements()).isEqualTo(2);
     assertThat(captor.getValue().getPaginationInfos().getTotalPages()).isEqualTo(1);
+  }
+
+  private static AppProperties appProperties() {
+    final AppProperties appProperties = new AppProperties();
+    appProperties.setMarketsPerPage(50);
+    return appProperties;
   }
 }

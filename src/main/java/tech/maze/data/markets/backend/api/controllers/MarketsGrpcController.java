@@ -10,6 +10,7 @@ import tech.maze.commons.exceptions.GrpcStatusException;
 import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.commons.pagination.Pagination;
 import tech.maze.commons.pagination.PaginationUtils;
+import tech.maze.data.markets.backend.AppProperties;
 import tech.maze.data.markets.backend.api.mappers.MarketDtoMapper;
 import tech.maze.data.markets.backend.api.search.FindOneMarketSearchStrategyHandler;
 import tech.maze.data.markets.backend.domain.models.Market;
@@ -28,6 +29,7 @@ public class MarketsGrpcController
   SearchMarketsUseCase searchMarketsUseCase;
   ProtobufValueMapper protobufValueMapper;
   MarketDtoMapper marketDtoMapper;
+  AppProperties appProperties;
 
   @Override
   public void findOne(
@@ -55,10 +57,11 @@ public class MarketsGrpcController
   ) {
     final List<java.util.UUID> dataProviderIds =
         protobufValueMapper.toUuids(request.getDataProvidersList());
+    final int defaultLimit = appProperties.getMarketsPerPage();
     final Pagination pagination = PaginationUtils.normalize(
         request.hasPagination() ? request.getPagination().getPage() : 0,
-        request.hasPagination() ? request.getPagination().getLimit() : 50,
-        50
+        request.hasPagination() ? request.getPagination().getLimit() : defaultLimit,
+        defaultLimit
     );
     final MarketsPage marketsPage = searchMarketsUseCase.findByDataProviderIds(
         dataProviderIds,
