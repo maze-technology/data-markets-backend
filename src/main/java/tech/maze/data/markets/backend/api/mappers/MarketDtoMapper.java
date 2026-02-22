@@ -3,14 +3,12 @@ package tech.maze.data.markets.backend.api.mappers;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import tech.maze.commons.mappers.BaseDtoMapper;
 import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.domain.models.Market;
-import tech.maze.data.markets.backend.domain.models.MarketType;
 import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
 
 /**
@@ -24,7 +22,8 @@ import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = {
       BaseDtoMapper.class,
-      ProtobufValueMapper.class
+      ProtobufValueMapper.class,
+      MarketTypeDtoMapper.class
     }
 )
 public interface MarketDtoMapper {
@@ -43,22 +42,5 @@ public interface MarketDtoMapper {
    */
   default OptionSpecificData toOptionSpecificData(tech.maze.dtos.markets.models.Market market) {
     return null;
-  }
-
-  /**
-   * Converts domain market type values to DTO enum values.
-   */
-  @Named("marketTypeToDto")
-  default tech.maze.dtos.markets.enums.Type marketTypeToDto(MarketType value) {
-    if (value == null) {
-      return tech.maze.dtos.markets.enums.Type.UNRECOGNIZED;
-    }
-
-    return switch (value) {
-      case SPOT -> tech.maze.dtos.markets.enums.Type.SPOT;
-      case PERP -> tech.maze.dtos.markets.enums.Type.PERPETUAL;
-      case FUTURES -> tech.maze.dtos.markets.enums.Type.PERPETUAL;
-      case OPTION -> tech.maze.dtos.markets.enums.Type.PERPETUAL;
-    };
   }
 }

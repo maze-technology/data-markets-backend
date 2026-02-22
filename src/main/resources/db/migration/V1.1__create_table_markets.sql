@@ -9,8 +9,5 @@ create table if not exists public.markets
   created_at           timestamp with time zone not null default now()
 );
 
-alter table if exists public.markets
-  add column if not exists option_specific_data jsonb;
-
 create unique index if not exists index_unique_markets_type_exchange_base_quote
   on public.markets (type, upper(exchange), upper(base), upper(quote));
