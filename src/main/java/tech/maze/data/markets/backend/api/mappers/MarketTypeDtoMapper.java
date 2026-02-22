@@ -38,7 +38,7 @@ public class MarketTypeDtoMapper {
       case SPOT -> MarketType.SPOT;
       case PERPETUAL -> MarketType.PERP;
       case UNRECOGNIZED -> null;
-      default -> null;
+      default -> throw new IllegalArgumentException("marketType must be defined");
     };
   }
 }

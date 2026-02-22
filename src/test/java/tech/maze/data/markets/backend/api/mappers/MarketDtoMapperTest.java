@@ -23,9 +23,4 @@ class MarketDtoMapperTest {
     assertThat(marketTypeDtoMapper.toDto(MarketType.FUTURES)).isEqualTo(tech.maze.dtos.markets.enums.Type.PERPETUAL);
     assertThat(marketTypeDtoMapper.toDto(MarketType.OPTION)).isEqualTo(tech.maze.dtos.markets.enums.Type.PERPETUAL);
   }
-
-  @Test
-  void toOptionSpecificDataReturnsNullForNow() {
-    assertThat(mapper.toOptionSpecificData(tech.maze.dtos.markets.models.Market.getDefaultInstance())).isNull();
-  }
 }

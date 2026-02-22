@@ -9,7 +9,6 @@ import org.mapstruct.ReportingPolicy;
 import tech.maze.commons.mappers.BaseDtoMapper;
 import tech.maze.commons.mappers.ProtobufValueMapper;
 import tech.maze.data.markets.backend.domain.models.Market;
-import tech.maze.data.markets.backend.domain.models.OptionSpecificData;
 
 /**
  * Maps between market domain and DTO models.
@@ -37,10 +36,4 @@ public interface MarketDtoMapper {
   @Mapping(target = "quoteId", source = "quote", qualifiedByName = "stringToValue")
   tech.maze.dtos.markets.models.Market toDto(Market market);
 
-  /**
-   * Included for future request-to-domain expansion.
-   */
-  default OptionSpecificData toOptionSpecificData(tech.maze.dtos.markets.models.Market market) {
-    return null;
-  }
 }
